@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Currency Converter Demo</string>
+    <string name="prompt_from_currency">FROM CURRENCY</string>
+    <string name="prompt_to_currency">TO CURRENCY</string>
+    <string name="prompt_currency_value_to_convert">CURRENCY VALUE TO CONVERT</string>
+    <string name="converted_currency_value">€10.83</string>
+    <string name="action_currency_convert_button">Convert</string>
 </resources>
