@@ -13,7 +13,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.Response;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -57,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         clearCurrencyConvertedValue();
 
         getCurrencyConversion(
-                fromCurrency.getText().toString(),
-                toCurrency.getText().toString(),
-                currencyValueToConvert.getText().toString()
+            fromCurrency.getText().toString(),
+            toCurrency.getText().toString(),
+            currencyValueToConvert.getText().toString()
         );
     }
 
@@ -81,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
         this.currencyConvertedValue = (TextView) findViewById(R.id.currency_converted_value);
 
         this.errorMessage = (TextView) findViewById(R.id.error_message);
-
-        requestQueue = Volley.newRequestQueue(this);
     }
 
     private void clearError() {
@@ -107,15 +104,16 @@ public class MainActivity extends AppCompatActivity {
 
         Log.e(LOG_TAG, "API URL: " + url);
 
-        JsonObjectRequest currencyConversionRequest = new JsonObjectRequest(Request.Method.GET, url,
+        JsonObjectRequest currencyConversionRequest = new JsonObjectRequest(Request.Method.GET, url, null,
             new Response.Listener<JSONObject>() {
+
                 @Override
                 public void onResponse(JSONObject response) {
                     handleResponse(response, currencyValueToConvert, currencyQuery);
                 }
             },
-
             new Response.ErrorListener() {
+
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(LOG_TAG, error.toString());
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             }
         );
 
-        requestQueue.add(currencyConversionRequest);
+        VolleyQueueSingleton.getInstance(this).addToRequestQueue(currencyConversionRequest);
     }
 
     private void handleResponse(JSONObject response, String currencyValueToConvert, String currencyQuery) {
