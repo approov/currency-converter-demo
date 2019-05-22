@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+
+    <!-- Official Android N API -->
+    <!--https://android-developers.googleblog.com/2016/07/changes-to-trusted-certificate.html-->
+    <domain-config>
+        <domain>free.currencyconverterapi.com</domain>
+        <trust-anchors>
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+
+</network-security-config>
