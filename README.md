@@ -43,9 +43,14 @@ COMMANDS / ARGUMENTS:
                             $ ./stack down
                             $ ./stack down proxy
 
+  install                 Pulls the official Docker image for mitmproxy:
+                            $ ./stack install
+
+  mitmweb [options]       Runs a mitmweb command:
+                            $ ./stack mitmweb --listen-host <wifi.ip.address> --web-iface <wifi.ip.address>
+
   up <arguments>          Starts the docker containers for running the stack:
                             $ ./stack up proxy <wifi.ip.address>
-
 ```
 
 Mainly the bash script is a wrapper around Docker commands.
