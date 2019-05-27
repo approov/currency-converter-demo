@@ -10,11 +10,19 @@
             <certificates src="system" />
         </trust-anchors>
         <pin-set>
-            <!--Pin for: free.currencyconverterapi.com-->
-            <pin digest="SHA-256">47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</pin>
+            <!-- Pin for: currency-converter-demo.pdm.approov.io -->
             <pin digest="SHA-256">qXHiE7hFX2Kj4ZCtnr8u8yffl8w9CTv6kE0U5j0o1XY=</pin>
-            <!--<pin digest="SHA-256">3guYbNJehi+JwlEWyc4nxCK4o6Faus6gnE5y8YRj4tc=</pin>-->
+
+            <!-- Backup Pin for: currency-converter-demo.pdm.approov.io -->
+            <pin digest="SHA-256">47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</pin>
         </pin-set>
+
+        <!-- TrustKit Android API -->
+        <!-- enforce pinning validation -->
+        <trustkit-config enforcePinning="true" disableDefaultReportUri="true">
+            <!-- Add a reporting URL for pin validation reports -->
+            <report-uri>https://report.pdm.approov.io/report/pinning-violation</report-uri>
+        </trustkit-config>
     </domain-config>
 
 </network-security-config>

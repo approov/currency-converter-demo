@@ -82,19 +82,3 @@ def _get_conversion_rate(currency_query):
     response = requests.get(url)
 
     return response
-
-@api.route('/report-pinning-violations', methods=['POST'])
-def report_pinning_violations():
-
-    log.info("CERTIFICATE PINNING VIOLATION: ")
-    log.info(json.dumps(request.get_json()))
-
-    # TODO:
-    #
-    # * Implement an independent PubSub server to receive this reports, and
-    #   publish them in real-time to the subscribers. The pub server will work
-    #   on a dedicated docker network that all containers must connect to.
-    return jsonify()
-
-
-

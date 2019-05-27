@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        VolleyQueueSingleton.getInstance(this).addToRequestQueue(currencyConversionRequest);
+        VolleyQueueSingleton.getInstance(this, apiBaseUrl).addToRequestQueue(currencyConversionRequest);
     }
 
     private void handleResponse(JSONObject response) {
