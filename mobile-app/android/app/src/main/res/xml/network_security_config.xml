@@ -4,10 +4,17 @@
     <!-- Official Android N API -->
     <!--https://android-developers.googleblog.com/2016/07/changes-to-trusted-certificate.html-->
     <domain-config>
-        <domain>free.currencyconverterapi.com</domain>
+        <domain>currency-converter-demo.pdm.approov.io</domain>
         <trust-anchors>
-            <certificates src="user" />
+            <!--<certificates src="user" />-->
+            <certificates src="system" />
         </trust-anchors>
+        <pin-set>
+            <!--Pin for: free.currencyconverterapi.com-->
+            <pin digest="SHA-256">47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</pin>
+            <pin digest="SHA-256">qXHiE7hFX2Kj4ZCtnr8u8yffl8w9CTv6kE0U5j0o1XY=</pin>
+            <!--<pin digest="SHA-256">3guYbNJehi+JwlEWyc4nxCK4o6Faus6gnE5y8YRj4tc=</pin>-->
+        </pin-set>
     </domain-config>
 
 </network-security-config>

@@ -8,6 +8,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.Response;
@@ -17,10 +18,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.Currency;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "CURRENCY_CONVERTER_DEMO";
 
     // In a production app this url should not be stored in the code.
-    private String apiBaseUrl = "https://free.currencyconverterapi.com/api/v6/convert?";
+    //private String apiBaseUrl = "https://free.currencyconverterapi.com/api/v6/convert?";
+    private String apiBaseUrl = "https://currency-converter-demo.pdm.approov.io";
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -95,12 +95,13 @@ public class MainActivity extends AppCompatActivity {
         final String currencyQuery = fromCurrency.toUpperCase() + "_" + toCurrency.toUpperCase();
 
         // Building the url with the api key retrieved from the native C++ code with stringFromJNI().
-        String url = this.apiBaseUrl + "q=" + currencyQuery + "&compact=ultra&apiKey=" + stringFromJNI();
+        //String url = this.apiBaseUrl + "q=" + currencyQuery + "&compact=ultra&apiKey=" + stringFromJNI();
+        String url = this.apiBaseUrl + "/currency/convert/" + currencyValueToConvert + "/from/" + fromCurrency + "/to/" + toCurrency;
 
-        makeApiRequest(currencyValueToConvert, currencyQuery, url);
+        makeApiRequest(url);
     }
 
-    private void makeApiRequest(final String currencyValueToConvert, final String currencyQuery, String url) {
+    private void makeApiRequest(String url) {
 
         Log.e(LOG_TAG, "API URL: " + url);
 
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onResponse(JSONObject response) {
-                    handleResponse(response, currencyValueToConvert, currencyQuery);
+                    handleResponse(response);
                 }
             },
             new Response.ErrorListener() {
@@ -120,12 +121,20 @@ public class MainActivity extends AppCompatActivity {
                     setError(error.toString());
                 }
             }
-        );
+        ) {
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                HashMap headers = new HashMap();
+                headers.put("Api-Key", stringFromJNI());
+                Log.i(LOG_TAG, "API KEY: " + stringFromJNI());
+                return headers;
+            }
+        };
 
         VolleyQueueSingleton.getInstance(this).addToRequestQueue(currencyConversionRequest);
     }
 
-    private void handleResponse(JSONObject response, String currencyValueToConvert, String currencyQuery) {
+    private void handleResponse(JSONObject response) {
 
         if (response.length() <= 0) {
 
@@ -138,54 +147,30 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            String currencyRate = response.get(currencyQuery).toString();
-            Log.e(LOG_TAG, "CURRENCY RATE: " + currencyRate);
+            if (response.has("converted_value")) {
+                String currencyValueFormatted = response.getString("converted_value");
+                Log.i(LOG_TAG, "CURRENCY RATE: " + currencyValueFormatted);
+                this.currencyConvertedValue.setText(currencyValueFormatted);
+                return;
+            }
 
-            handleCurrencyConversion(currencyValueToConvert, currencyRate, currencyQuery);
+            if (response.has("error")) {
+                String error = response.getString("error");
+                Log.e(LOG_TAG, error);
+                this.setError(error);
+                return;
+            }
+
+            Log.e(LOG_TAG, "Unknown response from the API server.");
+            this.setError("Unknown response from the API server !!!");
 
         } catch (JSONException e) {
 
             Log.e(LOG_TAG, e.getMessage());
+
+            // Don't return the exception message in a Production App, once it can leak sensitive
+            // information
             this.setError(e.getMessage());
-        }
-    }
-
-    private void handleCurrencyConversion(String currencyValue, String currencyRate, String currencyQuery) {
-
-        Double convertedValue = stringNumberToDouble(currencyValue) * stringNumberToDouble(currencyRate);
-        Log.e(LOG_TAG, "CONVERTED VALUE: " + convertedValue);
-
-        String currencyCode = currencyQuery.split("_")[1];
-        Log.e(LOG_TAG, "CURRENCY CODE: " + currencyCode);
-
-        String currencyValueFormatted = formatAsCurrency(convertedValue, currencyCode);
-        Log.e(LOG_TAG, "CURRENCY VALUE FORMATTED: " + currencyValueFormatted);
-
-        this.currencyConvertedValue.setText(currencyValueFormatted);
-    }
-
-    private String formatAsCurrency(Double convertedValue, String currencyCode) {
-
-        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.getDefault());
-        currency.setCurrency(Currency.getInstance(currencyCode));
-
-        return currency.format(convertedValue);
-    }
-
-    private Double stringNumberToDouble(String number) {
-
-        try {
-
-            return NumberFormat.getNumberInstance().parse(number)
-                    .doubleValue();
-
-        } catch (ParseException exception) {
-
-            Log.e(LOG_TAG, exception.getMessage());
-
-            this.setError(exception.getMessage());
-
-            return null;
         }
     }
 

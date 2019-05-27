@@ -1,0 +1,29 @@
+version: "2.1"
+
+services:
+
+  python:
+    image: approov/currency-converter-demo
+    build: ./server/docker
+    restart: always
+    env_file: .env
+    environment:
+      - FLASK_ENV=prod
+    networks:
+      - traefik
+      - default
+    expose:
+      - 5000
+    command: "flask run -h 0.0.0.0 --reload"
+    volumes:
+      - "./server:/home/python/workspace"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=approov-currency-converter-demo"
+      - "traefik.docker.network=traefik"
+      - "traefik.port=5000"
+      - "traefik.frontend.rule=Host:currency-converter-demo.pdm.approov.io"
+
+networks:
+  traefik:
+    external: true

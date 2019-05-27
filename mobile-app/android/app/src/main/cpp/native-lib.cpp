@@ -10,7 +10,7 @@ Java_com_criticalblue_currencyconverterdemo_MainActivity_stringFromJNI(
     // To add the API_KEY to the mobile app when is compiled you need to:
     //   * copy `api_key.h.example` to `api_key.h`
     //   * edit the file and replace this text `place-the-api-key-here` with your desired API_KEY
-    std::string JNI_API_KEY = CURRENCY_CONVERTER_DEMO_API_KEY_H;
+    std::string JNI_API_KEY = API_KEY_H;
 
     return env->NewStringUTF(JNI_API_KEY.c_str());
 }

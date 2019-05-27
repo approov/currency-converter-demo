@@ -92,26 +92,26 @@
                 android:onClick="convertCurrency" />
 
             <TextView
-                android:id="@+id/currency_converted_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="26dp"
-                android:textStyle="bold"
-                android:textSize="36dp"
-                android:gravity="center"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-            <TextView
                 android:id="@+id/error_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="26dp"
+                android:layout_marginTop="6dp"
                 android:gravity="center"
-                android:textStyle="bold"
+                android:maxLines="10"
                 android:textColor="#FF0000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/currency_converted_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:gravity="center"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="36dp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>

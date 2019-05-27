@@ -5,13 +5,13 @@ This repository is part of the article [Steal that API key with a man in the mid
 
 ## HOW TO USE
 
-Please read the linked article to understand the purpose and how to use the 
+Please read the linked article to understand the purpose and how to use the
 Currency Converter Demo.
 
 In order to make easy to follow the demo, a bash script is included:
 
 ```bash
-$ ./stack     
+  ./stack
 
 CURRENCY CONVERTER DEMO STACK
 
@@ -51,6 +51,7 @@ COMMANDS / ARGUMENTS:
 
   up <arguments>          Starts the docker containers for running the stack:
                             $ ./stack up proxy <wifi.ip.address>
+
 ```
 
 Mainly the bash script is a wrapper around Docker commands.

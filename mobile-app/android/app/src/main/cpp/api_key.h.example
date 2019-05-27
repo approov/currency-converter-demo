@@ -1,4 +1,4 @@
-#ifndef CURRENCY_CONVERTER_DEMO_API_KEY_H
-#define CURRENCY_CONVERTER_DEMO_API_KEY_H "api_key_here"
+#ifndef API_KEY_H
+#define API_KEY_H "base64-encoded-api-key"
 
 #endif
