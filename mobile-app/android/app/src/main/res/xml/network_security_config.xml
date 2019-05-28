@@ -21,7 +21,7 @@
         <!-- enforce pinning validation -->
         <trustkit-config enforcePinning="true" disableDefaultReportUri="true">
             <!-- Add a reporting URL for pin validation reports -->
-            <report-uri>https://report.pdm.approov.io/report/pinning-violation</report-uri>
+            <report-uri>https://report.pdm.approov.io/pinning-violation/report</report-uri>
         </trustkit-config>
     </domain-config>
 

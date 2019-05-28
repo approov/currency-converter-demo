@@ -22,7 +22,7 @@ services:
       - "traefik.backend=approov-currency-converter-demo"
       - "traefik.docker.network=traefik"
       - "traefik.port=5000"
-      - "traefik.frontend.rule=Host:currency-converter-demo.pdm.approov.io"
+      - "traefik.frontend.rule=Host:currency-converter-demo.pdm.approov.io,report.pdm.approov.io"
 
 networks:
   traefik:

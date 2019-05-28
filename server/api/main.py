@@ -3,6 +3,7 @@ import logging
 import requests
 import time
 import json
+import hashlib
 
 from babel.numbers import format_currency
 from random import choice
@@ -25,6 +26,7 @@ import api_key_decorator
 HTTP_PORT = int(getenv('HTTP_PORT', 5000))
 API_URL = getenv('API_URL')
 API_KEY = getenv('API_KEY')
+REPORT_MAX_LENGTH = getenv('REPORT_MAX_LENGTH', 12000)
 
 def _getHeader(key, default_value = None):
     return request.headers.get(key, default_value)
@@ -52,7 +54,8 @@ def currency_convert(value_to_convert, from_currency, to_currency):
     except json.decoder.JSONDecodeError as e:
         log.error("Invalid JSON in the response | %s", e)
         _get_conversion_rate.delete(currency_query)
-        return jsonify(error="Currency Rates Server timeout. Please try again later.")
+        abort(make_response(jsonify(error="Currency Rates Server timeout. Please try again later."), 400))
+        #return jsonify(error="Currency Rates Server timeout. Please try again later.")
 
     if currency_query in json_response:
         conversion_rate = json_response[currency_query]
@@ -67,18 +70,65 @@ def currency_convert(value_to_convert, from_currency, to_currency):
 
     if not json_response:
         log.error("CURRENCY CONVERTER FREE API ERROR: Check if the currency codes are valid.")
-        return jsonify(error="Check if the currency codes are valid.")
+        abort(make_response(jsonify(error="Check if the currency codes are valid."), 400))
 
     if "error" in json_response:
         log.error("CURRENCY CONVERTER FREE API ERROR: " + json_response["error"])
-        return jsonify(error="Reached free API limit. Please retry later.")
+        abort(make_response(jsonify(error="Reached free API limit. Please retry later."), 400))
 
 @lru(expire=3600)
 def _get_conversion_rate(currency_query):
 
     url = API_URL + "?q=" + currency_query + "&compact=ultra&apiKey=" + API_KEY
-    log.info(" URL: " + url)
+    log.info(" URL: %s", url)
 
     response = requests.get(url)
 
     return response
+
+@api.route('/pinning-violation/report/<string:uid>', methods=['GET'])
+def show_pinning_violation_report(uid):
+
+    log.info("REQUEST CACHED UID: %s", uid)
+
+    pinning_violation = _cache_pinning_violation_report.get(uid)
+
+    if not pinning_violation:
+        log.info("DELETED CACHED UID: %s", uid)
+        _cache_pinning_violation_report.delete(uid)
+        abort(make_response(jsonify(error = "Already expired the cache for uid: " + uid), 403))
+
+    return jsonify(pinning_violation)
+
+@api.route('/pinning-violation/report', methods=['POST'])
+def collect_pinning_violation_report():
+
+    json_request = json.dumps(request.get_json())
+    content_length = len(json_request)
+
+    if content_length is None:
+        log.error("REQUEST WITHOUT CONTENT LENGTH: %i", content_length)
+        abort(make_response(jsonify(), 400))
+
+    if content_length > REPORT_MAX_LENGTH:
+        log.error("REQUEST WITH CONTENT LENGTH TO BIG: %i", content_length)
+        abort(make_response(jsonify(), 400))
+
+    uid = hashlib.sha256(json_request.encode()).hexdigest()
+
+    cached_report_url = request.base_url + "/" + uid
+    log.info("CACHED REPORT URL: %s", cached_report_url)
+
+    _cache_pinning_violation_report(uid)
+
+    return jsonify(cached_report_url = cached_report_url)
+
+# Cache for 5 minutes no more then 30 reports.
+@lru(expire = 300, maxsize = 30)
+def _cache_pinning_violation_report(uid):
+
+    log.info("CACHED CERTIFICATE PINNING VIOLATION: %s", uid)
+
+    pinning_violation = request.get_json()
+
+    return pinning_violation
