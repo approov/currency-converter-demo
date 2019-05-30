@@ -2,24 +2,33 @@ package com.criticalblue.currencyconverterdemo;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.datatheorem.android.trustkit.TrustKit;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 // @link https://developer.android.com/training/volley/requestqueue#singleton
 public class VolleyQueueSingleton {
 
     private static VolleyQueueSingleton instance;
+    private final String baseUrl;
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
     private static Context ctx;
+    private static final String LOG_TAG = "VOLLEY QUEUE SINGLETON";
 
-    private VolleyQueueSingleton(Context context) {
-        ctx = context;
-        requestQueue = getRequestQueue();
+    private VolleyQueueSingleton(Context context, String baseUrl) {
+        this.ctx = context;
+        this.baseUrl = baseUrl;
+        this.requestQueue = getRequestQueue();
 
         imageLoader = new ImageLoader(requestQueue,
             new ImageLoader.ImageCache() {
@@ -38,19 +47,34 @@ public class VolleyQueueSingleton {
             });
     }
 
-    public static synchronized VolleyQueueSingleton getInstance(Context context) {
+    public static synchronized VolleyQueueSingleton getInstance(Context context, String baseUrl) {
         if (instance == null) {
-            instance = new VolleyQueueSingleton(context);
+            instance = new VolleyQueueSingleton(context, baseUrl);
         }
         return instance;
     }
 
     public RequestQueue getRequestQueue() {
+
         if (requestQueue == null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
-            requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
+
+            Context context = ctx.getApplicationContext();
+
+            TrustKit.initializeWithNetworkSecurityConfiguration(context);
+
+            String serverHostname = null;
+
+            try {
+                URL url = new URL(baseUrl);
+                serverHostname = url.getHost();
+                Log.i(LOG_TAG, "Server Hostname: " + serverHostname);
+            } catch (MalformedURLException e) {
+                Log.e(LOG_TAG, e.getMessage());
+            }
+
+            requestQueue = Volley.newRequestQueue(context, new HurlStack(null, TrustKit.getInstance().getSSLSocketFactory(serverHostname)));
         }
+
         return requestQueue;
     }
 

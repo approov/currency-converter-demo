@@ -4,10 +4,25 @@
     <!-- Official Android N API -->
     <!--https://android-developers.googleblog.com/2016/07/changes-to-trusted-certificate.html-->
     <domain-config>
-        <domain>free.currencyconverterapi.com</domain>
+        <domain>currency-converter-demo.pdm.approov.io</domain>
         <trust-anchors>
-            <certificates src="user" />
+            <!--<certificates src="user" />-->
+            <certificates src="system" />
         </trust-anchors>
+        <pin-set>
+            <!-- Pin for: currency-converter-demo.pdm.approov.io -->
+            <pin digest="SHA-256">qXHiE7hFX2Kj4ZCtnr8u8yffl8w9CTv6kE0U5j0o1XY=</pin>
+
+            <!-- Backup Pin for: currency-converter-demo.pdm.approov.io -->
+            <pin digest="SHA-256">47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</pin>
+        </pin-set>
+
+        <!-- TrustKit Android API -->
+        <!-- enforce pinning validation -->
+        <trustkit-config enforcePinning="true" disableDefaultReportUri="true">
+            <!-- Add a reporting URL for pin validation reports -->
+            <report-uri>https://report.pdm.approov.io/pinning-violation/report</report-uri>
+        </trustkit-config>
     </domain-config>
 
 </network-security-config>

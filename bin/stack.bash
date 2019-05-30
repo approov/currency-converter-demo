@@ -11,6 +11,33 @@ set -eu
     echo && cat ./docs/help/stack.txt && echo
   }
 
+  Setup_Stack_And_Mobile_App()
+  {
+    ############################################################################
+    # VARS
+    ############################################################################
+
+      # For a production secret is preferable to use at least: openssl rand -base64 256 | tr -d '\n'
+      local api_key=$( echo "currency-converter-demo-with-certificate-pinning" | openssl dgst -binary -sha256 | openssl enc -base64 )
+
+      local mobile_app_api_key_file=./mobile-app/android/app/src/main/cpp/api_key.h
+
+
+    ############################################################################
+    # EXECUTION
+    ############################################################################
+
+      if [ ! -f .env ]; then
+        cp -v .env.example .env
+        sed -i "s|base64-encoded-api-key|${api_key}|g" .env
+      fi
+
+      if [ ! -f "${mobile_app_api_key_file}" ]; then
+        cp -v "${mobile_app_api_key_file}".example "${mobile_app_api_key_file}"
+        sed -i "s|base64-encoded-api-key|${api_key}|g" "${mobile_app_api_key_file}"
+      fi
+  }
+
   Docker_Container_Is_Running()
   {
     sudo docker container ls -a | grep -q "${container_name}" -
@@ -140,6 +167,18 @@ set -eu
             exit $?
           ;;
 
+          mitmproxy | mitmweb | mitmdump )
+
+            Run_Mitm_Proxy ${background_mode} ${@}
+
+            exit $?
+          ;;
+
+          setup )
+            Setup_Stack_And_Mobile_App
+            exit 0
+          ;;
+
           up )
             shift 1
 
@@ -163,13 +202,6 @@ set -eu
               ;;
             esac
 
-          ;;
-
-          mitmproxy | mitmweb | mitmdump )
-
-            Run_Mitm_Proxy ${background_mode} ${@}
-
-            exit $?
           ;;
 
         esac
