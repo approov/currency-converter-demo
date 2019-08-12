@@ -4,7 +4,7 @@
     <!-- Official Android N API -->
     <!--https://android-developers.googleblog.com/2016/07/changes-to-trusted-certificate.html-->
     <domain-config>
-        <domain>currency-converter-demo.pdm.approov.io</domain>
+        <domain includeSubdomains="false" >currency-converter-demo.pdm.approov.io</domain>
         <trust-anchors>
             <!--<certificates src="user" />-->
             <certificates src="system" />

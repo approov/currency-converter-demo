@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.Response;
 import com.android.volley.Request;
@@ -29,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView currencyConvertedValue;
     private TextView errorMessage;
-
-    private RequestQueue requestQueue;
 
     private static final String LOG_TAG = "CURRENCY_CONVERTER_DEMO";
 

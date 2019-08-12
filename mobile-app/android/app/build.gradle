@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+Properties properties = new Properties()
+if (project.rootProject.file('local.properties').canRead()) {
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -15,12 +20,23 @@ android {
             }
         }
     }
+
+    signingConfigs {
+        release {
+            storeFile file("${properties.getProperty('android.keystore.path')}")
+            keyAlias "${properties.getProperty('android.private.key.alias')}"
+            storePassword "${properties.getProperty('android.keystore.password')}"
+            keyPassword "${properties.getProperty('android.private.key.password')}"
+        }
+    }
+
     buildTypes {
         release {
             debuggable false
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             debuggable true
