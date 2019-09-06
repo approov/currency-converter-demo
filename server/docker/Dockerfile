@@ -72,6 +72,7 @@ RUN pip3 install \
       requests \
       python-dotenv \
       Babel \
+      pyjwt \
       ring
 
 # pip install will put the executables under ~/.local/bin
