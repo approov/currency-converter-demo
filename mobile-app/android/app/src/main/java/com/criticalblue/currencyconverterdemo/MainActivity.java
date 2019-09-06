@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         clearCurrencyConvertedValue();
 
+        closeKeyboard();
+
         getCurrencyConversion(
             fromCurrency.getText().toString(),
             toCurrency.getText().toString(),
@@ -87,12 +90,20 @@ public class MainActivity extends AppCompatActivity {
         this.currencyConvertedValue.setText("");
     }
 
+    private void closeKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(this.INPUT_METHOD_SERVICE);
+
+        View focusedView = getCurrentFocus();
+
+        if (focusedView != null) {
+            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
     private void getCurrencyConversion(String fromCurrency, String toCurrency, final String currencyValueToConvert) {
 
-        final String currencyQuery = fromCurrency.toUpperCase() + "_" + toCurrency.toUpperCase();
-
         // Building the url with the api key retrieved from the native C++ code with stringFromJNI().
-        //String url = this.apiBaseUrl + "q=" + currencyQuery + "&compact=ultra&apiKey=" + stringFromJNI();
         String url = this.apiBaseUrl + "/currency/convert/" + currencyValueToConvert + "/from/" + fromCurrency + "/to/" + toCurrency;
 
         makeApiRequest(url);
