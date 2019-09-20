@@ -1,5 +1,6 @@
 package com.criticalblue.currencyconverterdemo;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,17 +10,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.VolleyError;
-import com.android.volley.Response;
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.criticalblue.currencyconverterdemo.approov.ActivityView;
+import com.criticalblue.currencyconverterdemo.approov.ApproovTokenSingleton;
+import com.criticalblue.currencyconverterdemo.approov.HttpRequest;
 
-import org.json.JSONObject;
 import org.json.JSONException;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,16 +26,19 @@ public class MainActivity extends AppCompatActivity {
     private TextView currencyConvertedValue;
     private TextView errorMessage;
 
-    private static final String LOG_TAG = "CURRENCY_CONVERTER_DEMO";
+    private static final String TAG = "CURRENCY_CONVERTER_DEMO";
 
     // In a production app this url should not be stored in the code.
     //private String apiBaseUrl = "https://free.currencyconverterapi.com/api/v6/convert?";
-    private String apiBaseUrl = "https://currency-converter-demo.pdm.approov.io";
+    private String apiBaseUrl = "https://currency-converter-demo.pdm.approov.io/v2";
 
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
     }
+
+    private ApproovTokenSingleton approov;
+
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
@@ -62,10 +61,28 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    public void setCurrencyConvertedValue(String value) {
+        this.currencyConvertedValue.setText(value);
+    }
+
+    public void setErrorMessage(String message) {
+
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("APPROOV","MESSAGE: " + message);
+                errorMessage.setText(message);
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        approov = ApproovTokenSingleton.getInstance(this);
+
         setContentView(R.layout.activity_main);
 
         this.fromCurrency = (AutoCompleteTextView) findViewById(R.id.from_currency_input);
@@ -110,79 +127,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeApiRequest(String url) {
+        MainActivityView activityView = new MainActivityView();
 
-        Log.e(LOG_TAG, "API URL: " + url);
+        HttpRequest httpRequest = new VolleyHttpRequest(activityView, stringFromJNI());
 
-        JsonObjectRequest currencyConversionRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-            new Response.Listener<JSONObject>() {
-
-                @Override
-                public void onResponse(JSONObject response) {
-                    handleResponse(response);
-                }
-            },
-            new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e(LOG_TAG, error.toString());
-                    setError(error.toString());
-                }
-            }
-        ) {
-            @Override
-            public Map getHeaders() throws AuthFailureError {
-                HashMap headers = new HashMap();
-                headers.put("Api-Key", stringFromJNI());
-                Log.i(LOG_TAG, "API KEY: " + stringFromJNI());
-                return headers;
-            }
-        };
-
-        VolleyQueueSingleton.getInstance(this, apiBaseUrl).addToRequestQueue(currencyConversionRequest);
+        approov.fetchApproovTokenOnBackground(httpRequest, url, activityView);
+        //approov.fetchApproovTokenAndWait(httpRequest, url, activityView);
     }
 
-    private void handleResponse(JSONObject response) {
+    class MainActivityView implements ActivityView {
 
-        if (response.length() <= 0) {
-
-            Log.e(LOG_TAG, "API SERVER EMPTY RESPONSE.");
-
-            this.setError("Empty response from server... Please Check that the currency codes are correct !!!");
-
-            return;
+        @Override
+        public Context getContext() {
+            return getApplicationContext();
         }
 
-        try {
+        @Override
+        public void handleErrorMessage(String message) {
+            setErrorMessage(message);
+        }
 
-            if (response.has("converted_value")) {
-                String currencyValueFormatted = response.getString("converted_value");
-                Log.i(LOG_TAG, "CURRENCY RATE: " + currencyValueFormatted);
-                this.currencyConvertedValue.setText(currencyValueFormatted);
+        @Override
+        public void handleResponse(JSONObject response) {
+
+            if (response.length() <= 0) {
+                Log.e(TAG, "API SERVER EMPTY RESPONSE.");
+                setErrorMessage("Empty response from server... Please Check that the currency codes are correct !!!");
                 return;
             }
 
-            if (response.has("error")) {
-                String error = response.getString("error");
-                Log.e(LOG_TAG, error);
-                this.setError(error);
+            try {
+
+                if (response.has("converted_value")) {
+                    String currencyValueFormatted = response.getString("converted_value");
+                    Log.i(TAG, "CURRENCY RATE: " + currencyValueFormatted);
+
+                    setCurrencyConvertedValue(currencyValueFormatted);
+                    return;
+                }
+
+                if (response.has("error")) {
+                    String error = response.getString("error");
+                    Log.e(TAG, error);
+                    setErrorMessage(error);
+                    return;
+                }
+
+                Log.e(TAG, "Unknown response from the API server.");
+                setErrorMessage("Unknown response from the API server !!!");
+                return;
+
+            } catch (JSONException e) {
+
+                Log.e(TAG, e.getMessage());
+
+                // Don't return the exception message in a Production App, once it can leak sensitive
+                // information
+                setErrorMessage(e.getMessage());
                 return;
             }
-
-            Log.e(LOG_TAG, "Unknown response from the API server.");
-            this.setError("Unknown response from the API server !!!");
-
-        } catch (JSONException e) {
-
-            Log.e(LOG_TAG, e.getMessage());
-
-            // Don't return the exception message in a Production App, once it can leak sensitive
-            // information
-            this.setError(e.getMessage());
         }
-    }
-
-    private void setError(String message) {
-        this.errorMessage.setText(message);
     }
 }

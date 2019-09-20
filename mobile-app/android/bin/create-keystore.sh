@@ -19,6 +19,10 @@ Main()
 
   local keystore_path=.local/approov.keystore.jks
 
+  if [ -z "${HOME}" ]; then
+    local HOME=/home/$(id -un)
+  fi
+
   if [ ! -f "${keystore_path}" ]; then
     keytool \
       -v \
@@ -38,6 +42,8 @@ Main()
   # to avoid the error "grep: ./local.properties: No such file or directory"
   touch ./local.properties
 
+  Add_Local_Property "sdk.dir" "${HOME}/Android/Sdk"
+  Add_Local_Property "ndk.dir" "${HOME}/Android/Sdk/ndk-bundle"
   Add_Local_Property "android.keystore.path" "../.local/approov.keystore.jks"
   Add_Local_Property "android.private.key.alias" "approov"
   Add_Local_Property "android.keystore.password" "YOUR_PASSWORD_HERE"
