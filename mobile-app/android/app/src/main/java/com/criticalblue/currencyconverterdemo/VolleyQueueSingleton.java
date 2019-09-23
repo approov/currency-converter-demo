@@ -2,7 +2,6 @@ package com.criticalblue.currencyconverterdemo;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.util.LruCache;
 
 import com.android.volley.Request;
@@ -10,10 +9,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.datatheorem.android.trustkit.TrustKit;
+import com.criticalblue.currencyconverterdemo.approov.ApproovPinningHostnameVerifier;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import javax.net.ssl.HttpsURLConnection;
 
 // @link https://developer.android.com/training/volley/requestqueue#singleton
 public class VolleyQueueSingleton {
@@ -22,13 +23,11 @@ public class VolleyQueueSingleton {
     private final String baseUrl;
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
-    private static Context ctx;
-    private static final String LOG_TAG = "VOLLEY QUEUE SINGLETON";
+    private static final String TAG = "VOLLEY_QUEUE_SINGLETON";
 
     private VolleyQueueSingleton(Context context, String baseUrl) {
-        this.ctx = context;
         this.baseUrl = baseUrl;
-        this.requestQueue = getRequestQueue();
+        this.requestQueue = getRequestQueue(context);
 
         imageLoader = new ImageLoader(requestQueue,
             new ImageLoader.ImageCache() {
@@ -54,32 +53,29 @@ public class VolleyQueueSingleton {
         return instance;
     }
 
-    public RequestQueue getRequestQueue() {
+    public RequestQueue getRequestQueue(Context context) {
 
         if (requestQueue == null) {
 
-            Context context = ctx.getApplicationContext();
+            requestQueue = Volley.newRequestQueue(context, new HurlStack() {
 
-            TrustKit.initializeWithNetworkSecurityConfiguration(context);
+                @Override
+                protected HttpURLConnection createConnection(URL url) throws IOException {
 
-            String serverHostname = null;
+                    ApproovPinningHostnameVerifier pinningHostnameVerifier = new ApproovPinningHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier());
+                    HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+                    urlConnection.setHostnameVerifier(pinningHostnameVerifier);
 
-            try {
-                URL url = new URL(baseUrl);
-                serverHostname = url.getHost();
-                Log.i(LOG_TAG, "Server Hostname: " + serverHostname);
-            } catch (MalformedURLException e) {
-                Log.e(LOG_TAG, e.getMessage());
-            }
-
-            requestQueue = Volley.newRequestQueue(context, new HurlStack(null, TrustKit.getInstance().getSSLSocketFactory(serverHostname)));
+                    return urlConnection;
+                }
+            });
         }
 
         return requestQueue;
     }
 
-    public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
+    public <T> void addToRequestQueue(Request<T> req, Context context) {
+        getRequestQueue(context).add(req);
     }
 
     public ImageLoader getImageLoader() {

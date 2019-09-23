@@ -1,12 +1,19 @@
 # CURRENCY CONVERTER DEMO
 
-This repository is part of the article [Steal that API key with a man in the middle attack](https://blog.approov.io/steal-that-api-key-with-a-man-in-the-middle-attack).
+This repository is part of the articles:
+
+* [Steal that API key with a Man in the Middle Attack](https://blog.approov.io/steal-that-api-key-with-a-man-in-the-middle-attack).
+* [Securing HTTPS with Certificate Pinning on Android](https://blog.approov.io/securing-https-with-certificate-pinning-on-android).
+* [Bypassing Certificate Pinning](https://blog.approov.io/bypassing-certificate-pinning).
+* [How to Protect Against Certificate Pinning Bypassing](https://blog.approov.io/how-to-protect-against-certificate-pinning-bypassing).
 
 
 ## HOW TO USE
 
-Please read the linked article to understand the purpose and how to use the
+Please read one of the linked articles to better understand the purpose and the scope where you will be using the
 Currency Converter Demo.
+
+### The Stack
 
 In order to make easy to follow the demo, a bash script is included:
 
@@ -55,3 +62,7 @@ COMMANDS / ARGUMENTS:
 ```
 
 Mainly the bash script is a wrapper around Docker commands.
+
+### The Mobile App Demo
+
+Please see the [README](./mobile-app/android/README.md) for the instructions.

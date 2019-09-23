@@ -17,7 +17,6 @@ def check_api_key(callback):
     def decorated(*args, **kwargs):
 
         api_key = request.headers.get("Api-Key")
-        #api_key = request.args.get("Api-Key")
 
         if api_key is None:
             log.info("Missing API Key.")
