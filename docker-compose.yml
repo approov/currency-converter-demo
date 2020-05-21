@@ -12,17 +12,15 @@ services:
     networks:
       - traefik
       - default
-    expose:
-      - 5000
-    command: "flask run -h 0.0.0.0 --reload"
+    command: "flask run -h 0.0.0.0 --reload --port ${HTTP_PORT? Missing value for: HTTP_PORT}"
     volumes:
       - "./server:/home/python/workspace"
     labels:
       - "traefik.enable=true"
-      - "traefik.backend=approov-currency-converter-demo"
+      - "traefik.backend=${CURRENCY_CONVERTER_DOMAIN? Missing value for: CURRENCY_CONVERTER_DOMAIN}"
       - "traefik.docker.network=traefik"
-      - "traefik.port=5000"
-      - "traefik.frontend.rule=Host:currency-converter-demo.pdm.approov.io,report.pdm.approov.io"
+      - "traefik.port=${HTTP_PORT}"
+      - "traefik.frontend.rule=Host:${CURRENCY_CONVERTER_DOMAIN},report.${CURRENCY_CONVERTER_DOMAIN}"
 
 networks:
   traefik:

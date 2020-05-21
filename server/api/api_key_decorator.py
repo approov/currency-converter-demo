@@ -9,8 +9,6 @@ log = logging.getLogger(__name__)
 
 MOBILE_API_KEY = getenv("MOBILE_API_KEY")
 
-log.info("MOBILE_API_KEY: " + MOBILE_API_KEY)
-
 def check_api_key(callback):
 
     @wraps(callback)

@@ -10,8 +10,10 @@ This repository is part of the articles:
 
 ## HOW TO USE
 
-Please read one of the linked articles to better understand the purpose and the scope where you will be using the
-Currency Converter Demo.
+For your convenience we host ourselves the backend for this demo. Please read the articles to find the specific url for each article backend and to better understand the purpose and the scope where you will be using the Currency Converter Demo.
+
+If you prefer to have control of the backend please follow the [deployment](/docs/DEPLOYMENT.md) guide to deploy the backend to an online server. It's necessary to deploy to an online server only for the article where we show you how to protect against certificate pinning bypass, other articles are fine with using localhost for demo purposes, and you can use the `./stack` bash script to help you with running it locally.
+
 
 ### The Stack
 

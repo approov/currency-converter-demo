@@ -2,23 +2,13 @@ FROM ubuntu:18.04
 
 ARG CONTAINER_USER="python"
 ARG CONTAINER_UID="1000"
-ARG DISPLAY=":0.0"
 ARG ZSH_THEME="robbyrussell"
 
 # Will not prompt for questions
 ENV DEBIAN_FRONTEND=noninteractive \
     CONTAINER_USER=python \
     CONTAINER_UID=1000 \
-    CONTAINER_HOME=/home/${CONTAINER_USER} \
-    ROOT_CA_DIR=/root-ca/ \
-    ROOT_CA_KEY="localhost-root-ca.key" \
-    ROOT_CA_PEM="localhost-root-ca.pem" \
-    ROOT_CA_NAME="LocalhostRootCA" \
-    PROXY_CA_FILENAME="FirewallProxyCA.crt" \
-    PROXY_CA_PEM="certificates/FirewallProxyCA.crt" \
-    PROXY_CA_NAME="FirewallProxy"
-
-COPY ./setup ${ROOT_CA_DIR}
+    CONTAINER_HOME=/home/${CONTAINER_USER}
 
 RUN apt update && \
     apt -y upgrade && \
@@ -43,14 +33,6 @@ RUN apt update && \
     printf "fs.inotify.max_user_watches=524288\n" >> /etc/sysctl.conf && \
 
     useradd -m -u ${CONTAINER_UID} -s /bin/bash ${CONTAINER_USER} && \
-
-    cd ${ROOT_CA_DIR} && \
-    ./setup-root-certificate.sh "${ROOT_CA_NAME}" && \
-    ./create-domain-certificate.sh "localhost" "${ROOT_CA_NAME}" && \
-    ./add-proxy-certificate.sh "${PROXY_CA_PEM}" && \
-    chown root:${CONTAINER_USER} localhost.crt && \
-    chown root:${CONTAINER_USER} localhost.key && \
-    chmod 640 localhost.crt localhost.key && \
 
     # Install Oh My Zsh for Root and Node user
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" && \
