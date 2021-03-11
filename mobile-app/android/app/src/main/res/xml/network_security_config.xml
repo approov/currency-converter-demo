@@ -4,16 +4,16 @@
     <!-- Official Android N API -->
     <!--https://android-developers.googleblog.com/2016/07/changes-to-trusted-certificate.html-->
     <domain-config>
-        <domain includeSubdomains="false" >currency-converter-demo.pdm.approov.io</domain>
+        <domain includeSubdomains="false" >currency-converter.demo.approov.io</domain>
         <trust-anchors>
             <!--<certificates src="user" />-->
             <certificates src="system" />
         </trust-anchors>
         <pin-set>
-            <!-- Pin for: currency-converter-demo.pdm.approov.io -->
-            <pin digest="SHA-256">qXHiE7hFX2Kj4ZCtnr8u8yffl8w9CTv6kE0U5j0o1XY=</pin>
+            <!-- Pin for: currency-converter.demo.approov.io -->
+            <pin digest="SHA-256">Nny5/17/K1xsiGjNRppl7Px3OyXoi71RJ30kQ7ceV0I=</pin>
 
-            <!-- Backup Pin for: currency-converter-demo.pdm.approov.io -->
+            <!-- Backup Pin for: currency-converter.demo.approov.io -->
             <pin digest="SHA-256">47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</pin>
         </pin-set>
 
@@ -21,7 +21,7 @@
         <!-- enforce pinning validation -->
         <trustkit-config enforcePinning="true" disableDefaultReportUri="true">
             <!-- Add a reporting URL for pin validation reports -->
-            <report-uri>https://report.pdm.approov.io/pinning-violation/report</report-uri>
+            <report-uri>https://report.currency-converter.demo.approov.io/pinning-violation/report</report-uri>
         </trustkit-config>
     </domain-config>
 
