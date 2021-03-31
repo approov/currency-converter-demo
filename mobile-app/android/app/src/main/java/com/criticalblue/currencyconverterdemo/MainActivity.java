@@ -33,12 +33,14 @@ public class MainActivity extends AppCompatActivity {
 
     // In a production app this url should not be stored in the code.
     //private String apiBaseUrl = "https://free.currencyconverterapi.com/api/v6/convert?";
-    private String apiBaseUrl = "https://currency-converter-demo.pdm.approov.io";
+    private String apiBaseUrl = "https://currency-converter.demo.approov.io";
 
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
     }
+
+    private VolleyQueueSingleton request;
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
@@ -77,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         this.currencyConvertedValue = (TextView) findViewById(R.id.currency_converted_value);
 
         this.errorMessage = (TextView) findViewById(R.id.error_message);
+
+        this.request = VolleyQueueSingleton.getInstance(this, apiBaseUrl);
     }
 
     private void clearError() {
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        VolleyQueueSingleton.getInstance(this, apiBaseUrl).addToRequestQueue(currencyConversionRequest);
+        this.request.addToRequestQueue(currencyConversionRequest);
     }
 
     private void handleResponse(JSONObject response) {

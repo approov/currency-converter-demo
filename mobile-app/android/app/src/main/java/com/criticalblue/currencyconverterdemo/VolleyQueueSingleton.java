@@ -29,22 +29,6 @@ public class VolleyQueueSingleton {
         this.ctx = context;
         this.baseUrl = baseUrl;
         this.requestQueue = getRequestQueue();
-
-        imageLoader = new ImageLoader(requestQueue,
-            new ImageLoader.ImageCache() {
-                private final LruCache<String, Bitmap>
-                        cache = new LruCache<String, Bitmap>(20);
-
-                @Override
-                public Bitmap getBitmap(String url) {
-                    return cache.get(url);
-                }
-
-                @Override
-                public void putBitmap(String url, Bitmap bitmap) {
-                    cache.put(url, bitmap);
-                }
-            });
     }
 
     public static synchronized VolleyQueueSingleton getInstance(Context context, String baseUrl) {
@@ -58,9 +42,7 @@ public class VolleyQueueSingleton {
 
         if (requestQueue == null) {
 
-            Context context = ctx.getApplicationContext();
-
-            TrustKit.initializeWithNetworkSecurityConfiguration(context);
+//            TrustKit.initializeWithNetworkSecurityConfiguration(this.ctx);
 
             String serverHostname = null;
 
@@ -72,17 +54,16 @@ public class VolleyQueueSingleton {
                 Log.e(LOG_TAG, e.getMessage());
             }
 
-            requestQueue = Volley.newRequestQueue(context, new HurlStack(null, TrustKit.getInstance().getSSLSocketFactory(serverHostname)));
+//            requestQueue = Volley.newRequestQueue(this.ctx, new HurlStack(null, TrustKit.getInstance().getSSLSocketFactory(serverHostname)));
+            requestQueue = Volley.newRequestQueue(this.ctx);
         }
 
         return requestQueue;
     }
 
     public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
-    }
-
-    public ImageLoader getImageLoader() {
-        return imageLoader;
+        req.setShouldCache(false);
+        this.requestQueue.getCache().clear();
+        this.requestQueue.add(req);
     }
 }

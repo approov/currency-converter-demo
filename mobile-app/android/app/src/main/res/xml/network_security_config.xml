@@ -3,12 +3,12 @@
 
     <!-- Official Android N API -->
     <!--https://android-developers.googleblog.com/2016/07/changes-to-trusted-certificate.html-->
-    <domain-config>
+    <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="false" >currency-converter.demo.approov.io</domain>
-        <trust-anchors>
-            <!--<certificates src="user" />-->
-            <certificates src="system" />
-        </trust-anchors>
+<!--        <trust-anchors>-->
+<!--            <certificates src="user" />-->
+<!--            <certificates src="system" />-->
+<!--        </trust-anchors>-->
         <pin-set>
             <!-- Pin for: currency-converter.demo.approov.io -->
             <pin digest="SHA-256">Nny5/17/K1xsiGjNRppl7Px3OyXoi71RJ30kQ7ceV0I=</pin>
