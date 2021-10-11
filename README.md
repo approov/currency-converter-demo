@@ -2,6 +2,18 @@
 
 This repository is part of the article [Steal that API key with a man in the middle attack](https://blog.approov.io/steal-that-api-key-with-a-man-in-the-middle-attack).
 
+## REQUIREMENTS
+
+### Android
+
+Your Android development setup needs to have installed CMake and the NDK bundle that you can install by following the [Android docs](https://developer.android.com/studio/projects/install-ndk).
+
+> **NOTE:** If after the mobile app doesn't build then it's probably because the NDK version that was installed is missing the `platforms` dir, but the error show is only about a `null` pointer exception. This is a known bug in the Gradle building systems that goes back several years. To fix it just create an empty `platforms` dir with:
+>
+>```bash
+>mkdir -p /Android/Sdk/ndk-bundle/platforms
+>```
+
 
 ## HOW TO USE
 
