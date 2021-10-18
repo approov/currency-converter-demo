@@ -1,88 +1,22 @@
 package com.criticalblue.currencyconverterdemo;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.util.Log;
-import android.util.LruCache;
-
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.datatheorem.android.trustkit.TrustKit;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-// @link https://developer.android.com/training/volley/requestqueue#singleton
 public class VolleyQueueSingleton {
+    private static Context appContext;
 
-    private static VolleyQueueSingleton instance;
-    private final String baseUrl;
-    private RequestQueue requestQueue;
-    private ImageLoader imageLoader;
-    private static Context ctx;
-    private static final String LOG_TAG = "VOLLEY QUEUE SINGLETON";
+    private static RequestQueue requestQueue;
 
-    private VolleyQueueSingleton(Context context, String baseUrl) {
-        this.ctx = context;
-        this.baseUrl = baseUrl;
-        this.requestQueue = getRequestQueue();
-
-        imageLoader = new ImageLoader(requestQueue,
-            new ImageLoader.ImageCache() {
-                private final LruCache<String, Bitmap>
-                        cache = new LruCache<String, Bitmap>(20);
-
-                @Override
-                public Bitmap getBitmap(String url) {
-                    return cache.get(url);
-                }
-
-                @Override
-                public void putBitmap(String url, Bitmap bitmap) {
-                    cache.put(url, bitmap);
-                }
-            });
+    public static synchronized void initialize(Context context) {
+        appContext = context;
     }
 
-    public static synchronized VolleyQueueSingleton getInstance(Context context, String baseUrl) {
-        if (instance == null) {
-            instance = new VolleyQueueSingleton(context, baseUrl);
-        }
-        return instance;
-    }
-
-    public RequestQueue getRequestQueue() {
-
+    public static synchronized RequestQueue getRequestQueue() {
         if (requestQueue == null) {
-
-            Context context = ctx.getApplicationContext();
-
-            TrustKit.initializeWithNetworkSecurityConfiguration(context);
-
-            String serverHostname = null;
-
-            try {
-                URL url = new URL(baseUrl);
-                serverHostname = url.getHost();
-                Log.i(LOG_TAG, "Server Hostname: " + serverHostname);
-            } catch (MalformedURLException e) {
-                Log.e(LOG_TAG, e.getMessage());
-            }
-
-            requestQueue = Volley.newRequestQueue(context, new HurlStack(null, TrustKit.getInstance().getSSLSocketFactory(serverHostname)));
+            requestQueue = Volley.newRequestQueue(appContext);
         }
-
         return requestQueue;
-    }
-
-    public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
-    }
-
-    public ImageLoader getImageLoader() {
-        return imageLoader;
     }
 }

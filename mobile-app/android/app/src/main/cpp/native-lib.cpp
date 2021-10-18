@@ -3,7 +3,7 @@
 #include "api_key.h"
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_criticalblue_currencyconverterdemo_MainActivity_stringFromJNI(
+Java_com_criticalblue_currencyconverterdemo_MainActivity_getApiKey(
         JNIEnv *env,
         jobject /* this */) {
 
