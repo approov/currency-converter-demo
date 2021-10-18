@@ -1,9 +1,10 @@
 package com.criticalblue.currencyconverterdemo;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -40,20 +41,22 @@ public class MainActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
     static {
-        System.loadLibrary("native-lib");
+        System.loadLibrary("currencyconverterdemo");
     }
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String stringFromJNI();
+    public native String getApiKey();
 
     public void convertCurrency(View v) {
 
         clearError();
 
         clearCurrencyConvertedValue();
+
+        closeKeyboard();
 
         getCurrencyConversion(
             fromCurrency.getText().toString(),
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        VolleyQueueSingleton.initialize(getApplicationContext());
+
         setContentView(R.layout.activity_main);
 
         this.fromCurrency = (AutoCompleteTextView) findViewById(R.id.from_currency_input);
@@ -90,12 +95,22 @@ public class MainActivity extends AppCompatActivity {
         this.currencyConvertedValue.setText("");
     }
 
+    private void closeKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(this.INPUT_METHOD_SERVICE);
+
+        View focusedView = getCurrentFocus();
+
+        if (focusedView != null) {
+            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
     private void getCurrencyConversion(String fromCurrency, String toCurrency, final String currencyValueToConvert) {
 
         final String currencyQuery = fromCurrency.toUpperCase() + "_" + toCurrency.toUpperCase();
 
-        // Building the url with the api key retrieved from the native C++ code with stringFromJNI().
-        String url = this.apiBaseUrl + "q=" + currencyQuery + "&compact=ultra&apiKey=" + stringFromJNI();
+        // Building the url with the api key retrieved from the native C++ code with getApiKey().
+        String url = this.apiBaseUrl + "q=" + currencyQuery + "&compact=ultra&apiKey=" + getApiKey();
 
         makeApiRequest(currencyValueToConvert, currencyQuery, url);
     }
@@ -120,9 +135,10 @@ public class MainActivity extends AppCompatActivity {
                     setError(error.toString());
                 }
             }
+
         );
 
-        VolleyQueueSingleton.getInstance(this).addToRequestQueue(currencyConversionRequest);
+        VolleyQueueSingleton.getRequestQueue().add(currencyConversionRequest);
     }
 
     private void handleResponse(JSONObject response, String currencyValueToConvert, String currencyQuery) {
