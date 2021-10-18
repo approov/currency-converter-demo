@@ -1,9 +1,10 @@
 package com.criticalblue.currencyconverterdemo;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -37,20 +38,22 @@ public class MainActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
     static {
-        System.loadLibrary("native-lib");
+        System.loadLibrary("currencyconverterdemo");
     }
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String stringFromJNI();
+    public native String getApiKey();
 
     public void convertCurrency(View v) {
 
         clearError();
 
         clearCurrencyConvertedValue();
+
+        closeKeyboard();
 
         getCurrencyConversion(
             fromCurrency.getText().toString(),
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        VolleyQueueSingleton.initialize(getApplicationContext());
+
         setContentView(R.layout.activity_main);
 
         this.fromCurrency = (AutoCompleteTextView) findViewById(R.id.from_currency_input);
@@ -85,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void clearCurrencyConvertedValue() {
         this.currencyConvertedValue.setText("");
+    }
+
+    private void closeKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(this.INPUT_METHOD_SERVICE);
+
+        View focusedView = getCurrentFocus();
+
+        if (focusedView != null) {
+            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     private void getCurrencyConversion(String fromCurrency, String toCurrency, final String currencyValueToConvert) {
@@ -122,13 +137,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap();
-                headers.put("Api-Key", stringFromJNI());
-                Log.i(LOG_TAG, "API KEY: " + stringFromJNI());
+                headers.put("Api-Key", getApiKey());
+                Log.i(LOG_TAG, "API KEY: " + getApiKey());
                 return headers;
             }
         };
 
-        VolleyQueueSingleton.getInstance(this, apiBaseUrl).addToRequestQueue(currencyConversionRequest);
+        VolleyQueueSingleton.getRequestQueue().add(currencyConversionRequest);
     }
 
     private void handleResponse(JSONObject response) {
