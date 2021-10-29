@@ -21,18 +21,14 @@ OPTIONS:
   -it                     Runs the docker container attached to the terminal:
                             $ ./stack -it <command> <arguments>
 
+  --wifi-ip-address       The IP where mitmproxy will listen on port 8080:
+                            $ ./stack --wifi-ip-address 192.168.1.08 <command> <arguments>
+
 
 COMMANDS / ARGUMENTS:
-
-  down                    Stops and removes all running containers:
-                            $ ./stack down
-                            $ ./stack down proxy
 
   install                 Pulls the official Docker image for mitmproxy:
                             $ ./stack install
 
-  mitmweb [options]       Runs a mitmweb command:
-                            $ ./stack mitmweb --listen-host <wifi.ip.address> --web-iface <wifi.ip.address>
-
-  up <arguments>          Starts the docker containers for running the stack:
-                            $ ./stack up proxy <wifi.ip.address>
+  mitmproxy [options]     Runs a mitmproxy command:
+                            $ ./stack --ip-address <wifi.ip.address> mitmproxy --showhost --view-filter "approov"

@@ -43,10 +43,10 @@ set -eu
       sudo docker run \
         --rm \
         ${background_mode} \
+        ${PORT_MAP} \
         --name "${container_name}" \
-        --net host \
         --volume ~/.mitmproxy:/home/mitmproxy/.mitmproxy \
-        "${MITM_DOCKER_IMAGE}" ${@}
+        mitmproxy/mitmproxy:6.0.2 ${@} # mitmproxy --showhost --view-filter "approov"
   }
 
 
@@ -85,7 +85,8 @@ set -eu
     # CONSTANTS
     ############################################################################
 
-      local MITM_DOCKER_IMAGE=mitmproxy/mitmproxy:4.0.4
+      local MITM_DOCKER_IMAGE=mitmproxy/mitmproxy:6.0.2
+      local PORT_MAP=""
 
 
     ############################################################################
@@ -117,52 +118,14 @@ set -eu
             shift 1
           ;;
 
-          down )
-            shift 1
-
-            case "${@}" in
-
-              proxy )
-                Stop_Docker_Container "proxy"
-              ;;
-
-              * )
-                Stop_Docker_Container "proxy"
-              ;;
-
-            esac
-
-            exit $?
+          --wifi-ip-address )
+            local PORT_MAP="--publish ${2? Missing the WiFi ip address}:8080:8080"
+            shift 2
           ;;
 
           install )
             sudo docker pull "${MITM_DOCKER_IMAGE}"
             exit $?
-          ;;
-
-          up )
-            shift 1
-
-            case "${1:-}" in
-
-              proxy )
-                shift 1
-
-                local wifi_ip_address="${1? Missing wifi ip address for proxy server !!!}"
-
-                Run_Mitm_Proxy \
-                  "${background_mode}" \
-                  mitmweb \
-                  --web-iface "${wifi_ip_address}" \
-                  --listen-host "${wifi_ip_address}"
-              ;;
-
-              * )
-                Show_Help
-                exit $?
-              ;;
-            esac
-
           ;;
 
           mitmproxy | mitmweb | mitmdump )
