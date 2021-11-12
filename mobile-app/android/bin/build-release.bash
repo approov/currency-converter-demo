@@ -15,9 +15,10 @@ Main()
     #
     # IMPORTANT: always build the final release APK from the CLI.
     ./gradlew clean
-    ./gradlew build #-x lint #-x lintVitalRelease
+    ./gradlew build -x lint #-x lintVitalRelease
 
-    printf "\n\nINSTALL THE APK IN YOUR DEVICE WITH: adb install app/build/outputs/apk/release/app-release.apk\n\n"
+    printf "\n\nINSTALL THE APK IN YOUR DEVICE WITH:"
+    printf "\nadb install -r app/build/outputs/apk/release/app-release.apk\n\n"
 }
 
 Main
