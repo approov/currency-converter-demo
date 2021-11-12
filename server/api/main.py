@@ -44,6 +44,15 @@ def endpoints():
 @api.route('/currency/convert/<string:value_to_convert>/from/<string:from_currency>/to/<string:to_currency>', methods=['GET'])
 @api_key_decorator.check_api_key
 def currency_convert(value_to_convert, from_currency, to_currency):
+   return _calculate_conversion(value_to_convert, from_currency, to_currency)
+
+# /v2/currency/convert/1.0/from/GBP/to/EUR
+@api.route('/v2/currency/convert/<string:value_to_convert>/from/<string:from_currency>/to/<string:to_currency>', methods=['GET'])
+@api_key_decorator.check_api_key
+def currency_convert_v2(value_to_convert, from_currency, to_currency):
+    return _calculate_conversion(value_to_convert, from_currency, to_currency)
+
+def _calculate_conversion(value_to_convert, from_currency, to_currency):
 
     currency_query = from_currency + "_" + to_currency
 
