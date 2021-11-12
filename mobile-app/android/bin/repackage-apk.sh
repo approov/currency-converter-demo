@@ -48,7 +48,8 @@ Main()
 
         rm -rf "${unaligned_apk}" "${aligned_apk}" "${unpacked_build_dir}"
 
-        printf "\n\nINSTALL THE APK IN YOUR DEVICE WITH:\n adb install ${signed_repackaged_apk}\n\n"
+        printf "\n\nINSTALL THE APK IN YOUR DEVICE WITH:"
+        printf "\nadb install -r ${signed_repackaged_apk}\n\n"
 }
 
 Main
