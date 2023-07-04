@@ -15,7 +15,8 @@
 
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode = "stateAlwaysVisible">
+            android:windowSoftInputMode = "stateAlwaysVisible"
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

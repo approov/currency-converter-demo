@@ -1,0 +1,38 @@
+{
+  "buildFiles": [
+    "/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/ivol/Library/Android/sdk/cmake/3.18.1/bin/ninja",
+      "-C",
+      "/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/.cxx/Debug/373om726/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/ivol/Library/Android/sdk/cmake/3.18.1/bin/ninja",
+    "-C",
+    "/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/.cxx/Debug/373om726/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "native-lib::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "native-lib",
+      "output": "/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/build/intermediates/cxx/Debug/373om726/obj/arm64-v8a/libnative-lib.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/Users/ivol/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+      "cppCompilerExecutable": "/Users/ivol/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

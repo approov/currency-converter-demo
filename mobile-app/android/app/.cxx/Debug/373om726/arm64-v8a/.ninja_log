@@ -1,0 +1,4 @@
+# ninja log v5
+0	605	1688458575	CMakeFiles/native-lib.dir/native-lib.cpp.o	2cb1785bdc249566
+605	711	1688458575	/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/build/intermediates/cxx/Debug/373om726/obj/arm64-v8a/libnative-lib.so	356bd7f196375047
+0	26	0	clean	a27f9bb124ef9b37
