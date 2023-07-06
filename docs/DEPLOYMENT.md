@@ -4,10 +4,10 @@ Guide to deploy the Currency Converter backend into a production demo server.
 
 For now this will be a small set of manual steps, but later we may want to automate this via the CI pipeline, by building the docker image and the mobile app binary for the release.
 
-## CLONE 
+## CLONE
 
 ```
-https://github.com/approov/currency-converter-demo.git && cd currency-converter-demo 
+https://github.com/approov/currency-converter-demo.git && cd currency-converter-demo
 ```
 
 ## ENVIRONMENT
@@ -36,7 +36,7 @@ MOBILE_API_KEY=base64-encoded-api-key
 
 ### The Appoov secret
 
-The `v2/*` endpoints are protected by the Approov Token, thus we need to set the Approov secret for `currency-convert.approov.io`.
+The `v2/*` endpoints are protected by the Approov Token, thus we need to set the Approov secret for `currency-converter.demo.approov.io`.
 
 Get the Approov secret with:
 
