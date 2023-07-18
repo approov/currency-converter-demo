@@ -1,0 +1,20 @@
+Executable : /Users/ivol/Library/Android/sdk/cmake/3.18.1/bin/cmake
+arguments : 
+-H/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/src/main/cpp
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=18
+-DANDROID_PLATFORM=android-18
+-DANDROID_ABI=x86
+-DCMAKE_ANDROID_ARCH_ABI=x86
+-DANDROID_NDK=/Users/ivol/Library/Android/sdk/ndk/21.4.7075529
+-DCMAKE_ANDROID_NDK=/Users/ivol/Library/Android/sdk/ndk/21.4.7075529
+-DCMAKE_TOOLCHAIN_FILE=/Users/ivol/Library/Android/sdk/ndk/21.4.7075529/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/Users/ivol/Library/Android/sdk/cmake/3.18.1/bin/ninja
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/build/intermediates/cxx/Debug/6o57x3b5/obj/x86
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/build/intermediates/cxx/Debug/6o57x3b5/obj/x86
+-DCMAKE_BUILD_TYPE=Debug
+-B/Users/ivol/Git/currency-converter-demo/mobile-app/android/app/.cxx/Debug/6o57x3b5/x86
+-GNinja
+jvmArgs : 
+

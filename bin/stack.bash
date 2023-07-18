@@ -28,13 +28,13 @@ set -eu
     ############################################################################
 
       if [ ! -f .env ]; then
-        cp -v .env.example .env
-        sed -i "s|base64-encoded-api-key|${api_key}|g" .env
+        cat .env.example | sed -e "s|base64-encoded-api-key|${api_key}|g" > .env
+        echo ".env.example -> .env"
       fi
 
       if [ ! -f "${mobile_app_api_key_file}" ]; then
-        cp -v "${mobile_app_api_key_file}".example "${mobile_app_api_key_file}"
-        sed -i "s|base64-encoded-api-key|${api_key}|g" "${mobile_app_api_key_file}"
+        cat "${mobile_app_api_key_file}".example | sed -e "s|base64-encoded-api-key|${api_key}|g" > "${mobile_app_api_key_file}"
+        echo "./mobile-app/android/app/src/main/cpp/api_key.h.example -> ./mobile-app/android/app/src/main/cpp/api_key.h"
       fi
   }
 

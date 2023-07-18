@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     // In a production app this url should not be stored in the code.
     //private String apiBaseUrl = "https://free.currencyconverterapi.com/api/v6/convert?";
-    private String apiBaseUrl = "https://currency-converter-demo.pdm.approov.io/v2";
+    private String apiBaseUrl = "https://currency-converter.demo.approov.io/v2";
 
     // Used to load the 'native-lib' library on application startup.
     static {
